@@ -56,7 +56,9 @@ for row_data in data_value:
                 new_file.append(append_data)
 
 for p in new_file:
-    print(p)
+    print(p[-1])
+
+# 데이터 프레임에 넣기 전에, signalP에 입력하는 방법을 구축
 
 new_header = data_header + ['Sequence name', 'New Sequence']
 
@@ -64,7 +66,9 @@ import pandas as pd
 
 new_dataframe = pd.DataFrame(new_file, columns=new_header, index=None)
 
-
+# 뒤로가기
+driver.back()
+box.clear()
 
 from Uniprot.api.web_controller import SignalP_controller
 
@@ -78,3 +82,27 @@ p = y.find("1")
 q = y.find("#", p)
 x = y[p:q]
 x_list = x.split()
+
+try:
+    data_value, data_header = exc_c.call_excel("C:/Users/SD NOH/PycharmProjects/OpenInnovation/data/file99.xlsx")
+except FileNotFoundError:
+    raise FileNotFoundError('파일 경로를 다시 설정해주시기 바랍니다.')
+
+print('a')
+
+chain_list=['x']
+sequence_name=['y']
+
+if isinstance(chain_list, list):
+    if isinstance(sequence_name, list):
+        pass
+        if len(chain_list) == len(sequence_name):
+            pass
+        else:
+            raise ValueError('chain_list 와 sequence_name 의 길이가 같아야 합니다.')
+    else:
+        raise TypeError('sequence_name의 type은 list형 입니다.')
+else:
+    raise TypeError('chain_list의 type은 list형 입니다.')
+
+print('x')
