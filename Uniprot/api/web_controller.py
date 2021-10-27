@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 # web scraper
-
+from bs4 import BeautifulSoup
 
 import time
 
@@ -37,13 +37,19 @@ driver.switch_to.default_content()
 
 driver.execute_script("window.scrollTo(0, 800)")
 
+
 driver.switch_to.frame(iframe)
 driver.find_element(By.XPATH, "/html/body/form/table[2]/tbody/tr[3]/td[1]/input[3]").click()
 driver.find_element(By.XPATH, "/html/body/form/p[5]/input[1]").click()
 driver.switch_to.default_content()
 
-address = driver.current_url
+time.sleep(5)
 
-print(type(address))
+driver.switch_to.frame(iframe)
+html = driver.page_source
+soup = BeautifulSoup(html, "html.parser")
+
+y = soup.select('body p')[0].text
+
 
 driver.quit()
