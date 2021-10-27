@@ -63,3 +63,18 @@ new_header = data_header + ['Sequence name', 'New Sequence']
 import pandas as pd
 
 new_dataframe = pd.DataFrame(new_file, columns=new_header, index=None)
+
+
+
+from Uniprot.api.web_controller import SignalP_controller
+
+sc = SignalP_controller()
+site = "https://services.healthtech.dtu.dk/service.php?SignalP-4.1"
+sc.site_enter(site)
+seq = 'MWVRQVPWSF TWAVLQLSWQ SGWLLEVPNG PWRSLTFYPA WLTVSEGANA TFTCSLSNWS EDLMLNWNRL SPSNQTEKQA AFCNGLSQPV QDARFQIIQL PNRHDFHMNI LDTRRNDSGI YLCGAISLHP KAKIEESPGA ELVVTERILE TSTRYPSPSP KPEGRFQGMV IGIMSALVGI PVLLLLAWAL AVFCSTSMSE ARGAGSKDDT LKEEPSAAPV PSVAYEELDF QGREKTPELP TACVHTEYAT IVFTEGLGAS AMGRRGSADG LQGPRPPRHE DGHCSWPL'
+y = sc.input_seq(sequence=seq)
+
+p = y.find("1")
+q = y.find("#", p)
+x = y[p:q]
+x_list = x.split()

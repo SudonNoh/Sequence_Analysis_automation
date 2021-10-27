@@ -10,46 +10,45 @@ from bs4 import BeautifulSoup
 import time
 
 
-s = Service(ChromeDriverManager().install())
+class SignalP_controller:
 
-options = webdriver.ChromeOptions()
-options.add_argument('window-size=1920,1080')
-# options.add_argument("headless")
+    def __init__(self):
+        self.chrome_service = Service(ChromeDriverManager().install())
+        self.options = webdriver.ChromeOptions()
+        self.options.add_argument('window-size=1920,1080')
+        # window size 설정: 'window-size=1920,1080'
+        # background 실행: 'headless'
+        self.driver = webdriver.Chrome(service=self.chrome_service, options=self.options)
+        self.driver.implicitly_wait(5)
 
-driver = webdriver.Chrome(service=s,
-                          options=options)
-driver.implicitly_wait(5)
+    def site_enter(self, get_url):
+        self.driver.get(url=get_url)
 
-driver.get(url="https://services.healthtech.dtu.dk/service.php?SignalP-4.1")
-assert "SignalP" in driver.title
+    def input_seq(self, sequence):
+        # iframe 위치 찾기
+        iframe = self.driver.find_element(By.ID, "servicetabs-1")
 
+        # 찾은 위치로 진입하고 sequence를 입력할 textarea 찾기
+        self.driver.switch_to.frame(iframe)
+        sequence_box = self.driver.find_element(By.NAME, "SEQPASTE")
+        sequence_box.send_keys(sequence)
 
-iframe = driver.find_element(By.ID, "servicetabs-1")
-driver.switch_to.frame(iframe)
+        # cookies 방해 받지 않게 scroll down
+        self.driver.switch_to.default_content()
+        self.driver.execute_script("window.scrollTo(0, 800)")
 
+        # 다시 iframe으로 진입 후 button click으로 다음 페이지로 이동
+        self.driver.switch_to.frame(iframe)
+        self.driver.find_element(By.XPATH, "/html/body/form/table[2]/tbody/tr[3]/td[1]/input[3]").click()
+        self.driver.find_element(By.XPATH, "/html/body/form/p[5]/input[1]").click()
 
-text_box = driver.find_element(By.NAME, "SEQPASTE")
-# need to input sequence variable
-seq = 'MWVRQVPWSF TWAVLQLSWQ SGWLLEVPNG PWRSLTFYPA WLTVSEGANA TFTCSLSNWS EDLMLNWNRL SPSNQTEKQA AFCNGLSQPV QDARFQIIQL PNRHDFHMNI LDTRRNDSGI YLCGAISLHP KAKIEESPGA ELVVTERILE TSTRYPSPSP KPEGRFQGMV IGIMSALVGI PVLLLLAWAL AVFCSTSMSE ARGAGSKDDT LKEEPSAAPV PSVAYEELDF QGREKTPELP TACVHTEYAT IVFTEGLGAS AMGRRGSADG LQGPRPPRHE DGHCSWPL'
-seq.strip()
-text_box.send_keys(seq)
-driver.switch_to.default_content()
+        time.sleep(5)
 
-driver.execute_script("window.scrollTo(0, 800)")
+        html = self.driver.page_source
+        soup = BeautifulSoup(html, "html.parser")
+        html_text = soup.select('body p')[0].text
 
-
-driver.switch_to.frame(iframe)
-driver.find_element(By.XPATH, "/html/body/form/table[2]/tbody/tr[3]/td[1]/input[3]").click()
-driver.find_element(By.XPATH, "/html/body/form/p[5]/input[1]").click()
-driver.switch_to.default_content()
-
-time.sleep(5)
-
-driver.switch_to.frame(iframe)
-html = driver.page_source
-soup = BeautifulSoup(html, "html.parser")
-
-y = soup.select('body p')[0].text
+        return html_text
 
 
-driver.quit()
+
