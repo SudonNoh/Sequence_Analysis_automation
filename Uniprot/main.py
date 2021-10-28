@@ -75,3 +75,5 @@ class main_signalP:
             self.signal_control.site_enter(url)
         except ValueError:
             raise ValueError('url을 확인해주세요.')
+        
+        test
