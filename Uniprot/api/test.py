@@ -40,11 +40,13 @@ for row_data in data_value:
     for each_data, header in zip(row_data, data_header):
         count_col += 1
         new_row_data.append(each_data)
-        if count_col == 5: # signal peptide column number로 변수로 설정
+        if count_col == 5:
+            # signal peptide column number로 변수로 설정
             # seq_c.combine_seq에 사용할 signal_text를 지정
             signal_text = each_data
 
-        if count_col == 6: # Sequence column number로 변수로 설정
+        if count_col == 6:
+            # Sequence column number로 변수로 설정
             # Sequence를 자르고 붙이는 과정을 진행
             x = seq_c.combine_seq(each_data, signal_text, chain_list=chain_list)
             # 새로 만든 Sequence list인 x의 요소 하나씩 꺼내 new_file에 저장
@@ -66,9 +68,6 @@ import pandas as pd
 
 new_dataframe = pd.DataFrame(new_file, columns=new_header, index=None)
 
-# 뒤로가기
-driver.back()
-box.clear()
 
 from Uniprot.api.web_controller import SignalP_controller
 
@@ -83,26 +82,4 @@ q = y.find("#", p)
 x = y[p:q]
 x_list = x.split()
 
-try:
-    data_value, data_header = exc_c.call_excel("C:/Users/SD NOH/PycharmProjects/OpenInnovation/data/file99.xlsx")
-except FileNotFoundError:
-    raise FileNotFoundError('파일 경로를 다시 설정해주시기 바랍니다.')
 
-print('a')
-
-chain_list=['x']
-sequence_name=['y']
-
-if isinstance(chain_list, list):
-    if isinstance(sequence_name, list):
-        pass
-        if len(chain_list) == len(sequence_name):
-            pass
-        else:
-            raise ValueError('chain_list 와 sequence_name 의 길이가 같아야 합니다.')
-    else:
-        raise TypeError('sequence_name의 type은 list형 입니다.')
-else:
-    raise TypeError('chain_list의 type은 list형 입니다.')
-
-print('x')

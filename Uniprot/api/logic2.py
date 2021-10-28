@@ -1,5 +1,4 @@
 from Uniprot.api.logic import excel_controller, seq_controller
-from Uniprot.api.web_controller import SignalP_controller
 
 
 class main_signalP:
@@ -7,10 +6,9 @@ class main_signalP:
     def __init__(self):
         self.excel_control = excel_controller()
         self.sequence_control = seq_controller()
-        self.signal_control = SignalP_controller()
         self.signal_text = ""
 
-    def first_process(self, file_route, chain_list, sequence_name):
+    def change_data(self, file_route, chain_list, sequence_name):
 
         # file route의 경로를 확인하고, 경로가 맞지 않으면 FilenotFoundError 출력력
         try:
@@ -56,22 +54,4 @@ class main_signalP:
 
         return new_data, new_header
 
-    def second_process(self, data, header, url):
 
-        if isinstance(data, list):
-            pass
-            if isinstance(header, list):
-                pass
-                if len(data[0]) == len(header):
-                    pass
-                else:
-                    raise ValueError('입력한 list들의 길이를 확인하세요.')
-            else:
-                raise TypeError("입력한 header의 타입이 list형이어야 합니다.")
-        else:
-            raise TypeError("입력한 data의 타입이 list형이어야 합니다.")
-
-        try:
-            self.signal_control.site_enter(url)
-        except ValueError:
-            raise ValueError('url을 확인해주세요.')

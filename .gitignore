@@ -7,6 +7,7 @@
 data/
 .idea/
 .vscode/
+SignalP_file2.xlsx
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
