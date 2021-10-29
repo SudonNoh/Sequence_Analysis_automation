@@ -35,7 +35,7 @@ class SignalP_controller:
 
         # cookies 방해 받지 않게 scroll down
         self.driver.switch_to.default_content()
-        self.driver.execute_script("window.scrollTo(0, 800)")
+        self.driver.execute_script("window.scrollTo(0, 1000)")
 
         # 다시 iframe으로 진입 후 button click으로 다음 페이지로 이동
         self.driver.switch_to.frame(self.iframe)

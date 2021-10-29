@@ -6,7 +6,7 @@ import time
 p = main_signalP()
 
 
-file_route = "C:/Users/SD NOH/PycharmProjects/OpenInnovation/data/file2.xlsx"
+file_route = "C:/Users/sudon/PycharmProjects/OpenInnovation/data/file2.xlsx"
 site_route = "https://services.healthtech.dtu.dk/service.php?SignalP-4.1"
 chain_list = [
      'DIQMTQSPSSLSASVGDRVTITCRASQGIRNYLAWYQQKPGKAPKLLIYAASTLQSGVPSRFSGSGSGTDFTLTISSLQPEDVATYYCQRYNRAPYTFGQGTKVEIKRTVAAP'
@@ -75,8 +75,8 @@ for i in range(len(result_data)):
 
             if float(row_list[j]) >= standard_variable:
                 count_overScore += 1
-                k = k+row_list[j - 2]+"  "+row_list[j - 1]+"  "+row_list[j]+"  "+\
-                    row_list[j + 1]+"  "+row_list[j + 2]+"\n "
+                k = k+row_list[j - 2]+"  "+row_list[j - 1]+"  "+row_list[j]+" / "\
+                    # + row_list[j + 1]+"  "+row_list[j + 2]+"\n "
 
                 print(row_list[j - 2], "  ", row_list[j - 1], "  ", row_list[j], "  ", row_list[j + 1], "  ",
                       row_list[j + 2], "**")
