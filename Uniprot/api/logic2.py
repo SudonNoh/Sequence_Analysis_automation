@@ -1,5 +1,5 @@
 from Uniprot.api.logic import excel_controller, seq_controller
-
+import pandas as pd
 
 class main_signalP:
 
@@ -55,3 +55,50 @@ class main_signalP:
         return new_data, new_header
 
 
+def export_logic(result_data, standard_variable, seq_header, file_route, file_number):
+    final_list = []
+    for i in range(len(result_data)):
+        # 위 데이터의 8번째 요소를 추출
+        row_list = result_data[i][8].split()
+
+        count_overScore = 0
+        new_row_list = []
+        k = ""
+
+        # 이제 안에 있는 요소들을 하나씩 추출해 C행에 해당하는 열인지 확인하고
+        # 만약 C행에 해당하는 요소(j)이면 standard_variable과 비교
+        num = 0
+        for j in range(len(row_list)):
+            if j == 2 + (5 * num):
+                num += 1
+
+                if float(row_list[j]) >= standard_variable:
+                    count_overScore += 1
+                    k = k + row_list[j - 2] + "  " + row_list[j - 1] + "  " + row_list[j] + " / " \
+                        # + row_list[j + 1]+"  "+row_list[j + 2]+"\n "
+
+                    print(row_list[j - 2], "  ", row_list[j - 1], "  ", row_list[j], "  ", row_list[j + 1], "  ",
+                          row_list[j + 2], "**")
+                else:
+                    print(row_list[j - 2], "  ", row_list[j - 1], "  ", row_list[j], "  ", row_list[j + 1], "  ",
+                          row_list[j + 2])
+
+        result_data[i].append(count_overScore)
+        result_data[i].append(k)
+        final_list.append(result_data[i])
+
+    final_header = seq_header + ['Result', 'Count_OverScore', 'index_OverScore']
+    final_pd = pd.DataFrame(final_list, columns=final_header)
+
+    raw_sheet = final_pd[['Entry', 'Entry name', 'Protein names', 'Gene names', 'Signal peptide', 'Sequence']]
+    new_sheet = final_pd[['Entry', 'New Sequence', 'Result', 'Count_OverScore', 'index_OverScore']]
+
+    # Create a pandas Excel writer using xlsxwriter as the engine.
+    writer = pd.ExcelWriter('SignalP_' + '_' + file_number + '.xlsx', engine='xlsxwriter')
+
+    # Write each dataframe to a different worksheet
+    raw_sheet.to_excel(writer, sheet_name='Raw data')
+    new_sheet.to_excel(writer, sheet_name='New data')
+
+    # Close the Pandas Excel writer and output the Excel file.
+    writer.save()

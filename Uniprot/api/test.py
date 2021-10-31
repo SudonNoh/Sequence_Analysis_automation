@@ -81,5 +81,3 @@ p = y.find("1")
 q = y.find("#", p)
 x = y[p:q]
 x_list = x.split()
-
-
