@@ -70,8 +70,6 @@ for i in seq_data:
                                       file_number=str(seq_data.index(i) + 1))
 
 
-
-#
 # # 위에서 나온 결과 데이터(result_data)를 한 행씩 추출
 # final_list = []
 # for i in range(len(result_data)):
