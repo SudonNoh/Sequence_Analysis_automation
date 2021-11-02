@@ -94,7 +94,7 @@ def export_logic(result_data, standard_variable, seq_header, file_route, file_nu
     new_sheet = final_pd[['Entry', 'New Sequence', 'Result', 'Count_OverScore', 'index_OverScore']]
 
     # Create a pandas Excel writer using xlsxwriter as the engine.
-    writer = pd.ExcelWriter('SignalP_' + '_' + file_number + '.xlsx', engine='xlsxwriter')
+    writer = pd.ExcelWriter('SignalP_' + file_number + '.xlsx', engine='xlsxwriter')
 
     # Write each dataframe to a different worksheet
     raw_sheet.to_excel(writer, sheet_name='Raw data')
@@ -102,3 +102,6 @@ def export_logic(result_data, standard_variable, seq_header, file_route, file_nu
 
     # Close the Pandas Excel writer and output the Excel file.
     writer.save()
+
+
+
