@@ -91,7 +91,7 @@ def export_logic(result_data, standard_variable, seq_header, file_route, file_nu
     final_pd = pd.DataFrame(final_list, columns=final_header)
 
     raw_sheet = final_pd[['Entry', 'Entry name', 'Protein names', 'Gene names', 'Signal peptide', 'Sequence']]
-    new_sheet = final_pd[['Entry', 'New Sequence', 'Result', 'Count_OverScore', 'index_OverScore']]
+    new_sheet = final_pd[['Entry', 'Sequence name', 'New Sequence', 'Result', 'Count_OverScore', 'index_OverScore']]
 
     # Create a pandas Excel writer using xlsxwriter as the engine.
     writer = pd.ExcelWriter('SignalP_' + file_number + '.xlsx', engine='xlsxwriter')

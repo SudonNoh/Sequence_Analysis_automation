@@ -1,28 +1,31 @@
-from Uniprot.api.logic import excel_controller, seq_controller
+import pandas as pd
+import numpy as np
 
+new_data = pd.read_excel('C:/Users/SD NOH/PycharmProjects/OpenInnovation/SignalP_final.xlsx', sheet_name='New data')
 
-exc_c = excel_controller()
-seq_c = seq_controller()
+# Count_OverScore 가 1인 값
+data = new_data[new_data['Count_OverScore'] == 1]
 
-filename = "C:/Users/SD NOH/PycharmProjects/OpenInnovation/data/file1.xlsx"
-
-data_value, data_header = exc_c.call_excel(filename)
+# 지정된 열 안에 문자열을 포함한 행들을 추출
+# x = data[data['New Sequence'].str.contains('문자열')]
 
 chain_list = [
      'DIQMTQSPSSLSASVGDRVTITCRASQGIRNYLAWYQQKPGKAPKLLIYAASTLQSGVPSRFSGSGSGTDFTLTISSLQPEDVATYYCQRYNRAPYTFGQGTKVEIKRTVAAP'
      'SVFIFPPSDEQLKSGTASVVCLLNNFYPREAKVQWKVDNALQSGNSQESVTEQDSKDSTYSLSSTLTLSKADYEKHKVYACEVTHQGLSSPVTKSFNRGEC',
+
      'EVQLVESGGGLVQPGRSLRLSCAASGFTFDDYAMHWVRQAPGKGLEWVSAITWNSGHIDYADSVEGRFTISRDNAKNSLYLQMNSLRAEDTAVYYCAKVSYLSTASSLDYWGQ'
      'GTLVTVSSASTKGPSVFPLAPSSKSTSGGTAALGCLVKDYFPEPVTVSWNSGALTSGVHTFPAVLQSSGLYSLSSVVTVPSSSLGTQTYICNVNHKPSNTKVDKKVEPKSCDK'
      'THTCPPCPAPELLGGPSVFLFPPKPKDTLMISRTPEVTCVVVDVSHEDPEVKFNWYVDGVEVHNAKTKPREEQYNSTYRVVSVLTVLHQDWLNGKEYKCKVSNKALPAPIEKT'
      'ISKAKGQPREPQVYTLPPSRDELTKNQVSLTCLVKGFYPSDIAVEWESNGQPENNYKTTPPVLDSDGSFFLYSKLTVDKSRWQQGNVFSCSVMHEALHNHYTQKSLSLSPGK',
+
      'QVQLVQSGVEVKKPGASVKVSCKASGYTFTNYYMYWVRQAPGQGLEWMGGINPSNGGTNFNEKFKNRVTLTTDSSTTTAYMELKSLQFDDTAVYYCARRDYRFDMGFDYWGQG'
      'TTVTVSSASTKGPSVFPLAPCSRSTSESTAALGCLVKDYFPEPVTVSWNSGALTSGVHTFPAVLQSSGLYSLSSVVTVPSSSLGTKTYTCNVDHKPSNTKVDKRVESKYGPPC'
      'PPCPAPEFLGGPSVFLFPPKPKDTLMISRTPEVTCVVVDVSQEDPEVQFNWYVDGVEVHNAKTKPREEQFNSTYRVVSVLTVLHQDWLNGKEYKCKVSNKGLPSSIEKTISKA'
      'KGQPREPQVYTLPPSQEEMTKNQVSLTCLVKGFYPSDIAVEWESNGQPENNYKTTPPVLDSDGSFFLYSRLTVDKSRWQEGNVFSCSVMHEALHNHYTQKSLSLSLGK',
+
      'EIVLTQSPATLSLSPGERATLSCRASKGVSTSGYSYLHWYQQKPGQAPRLLIYLASYLESGVPARFSGSGSGTDFTLTISSLEPEDFAVYYCQHSRDLPLTFGGGTKVEIKRT'
      'VAAPSVFIFPPSDEQLKSGTASVVCLLNNFYPREAKVQWKVDNALQSGNSQESVTEQDSKDSTYSLSSTLTLSKADYEKHKVYACEVTHQGLSSPVTKSFNRGEC'
  ]
-
 seq_name = [
     'Adalimumab-LC',
     'Adalimumab-HC',
@@ -30,54 +33,40 @@ seq_name = [
     'Pembrilizumab-HC'
 ]
 
-new_file = []
-# data_value에서 1행을 꺼내 row_data에 할당
-for row_data in data_value:
-    count_col = 0
+# Sequence name을 빼놓고 만들는 바람에 sequence name을 따로 지정하는 명령어를 실행
+for i in range(4):
+    data.loc[data['New Sequence'].str.contains(chain_list[i]), 'Sequence name'] = seq_name[i]
 
-    # new_row_data는 Sequence name과 새롭게 추가되는 New Sequence를 일시적으로 담을 list
-    new_row_data = []
-    for each_data, header in zip(row_data, data_header):
-        count_col += 1
-        new_row_data.append(each_data)
-        if count_col == 5:
-            # signal peptide column number로 변수로 설정
-            # seq_c.combine_seq에 사용할 signal_text를 지정
-            signal_text = each_data
-
-        if count_col == 6:
-            # Sequence column number로 변수로 설정
-            # Sequence를 자르고 붙이는 과정을 진행
-            x = seq_c.combine_seq(each_data, signal_text, chain_list=chain_list)
-            # 새로 만든 Sequence list인 x의 요소 하나씩 꺼내 new_file에 저장
-            for i, j in zip(x, seq_name):
-                add_data = [j, i]
-                # new_row_data는 4번 연속 사용되어야 하기 때문에 새로 만든 Sequence와 Sequence name을 add_data에 추가한 후
-                # new_row_data와 합쳐 append_data에 할당
-                append_data = new_row_data + add_data
-                new_file.append(append_data)
-
-for p in new_file:
-    print(p[-1])
-
-# 데이터 프레임에 넣기 전에, signalP에 입력하는 방법을 구축
-
-new_header = data_header + ['Sequence name', 'New Sequence']
-
-import pandas as pd
-
-new_dataframe = pd.DataFrame(new_file, columns=new_header, index=None)
+data_hc = data.loc[data['Sequence name'].str.contains("-HC")]
+data_lc = data.loc[data['Sequence name'].str.contains("-LC")]
 
 
-from Uniprot.api.web_controller import SignalP_controller
+# Unique 한 Entry 의 수
+Entry_count_all = data['Entry'].value_counts()
+Entry_count_hc = data_hc['Entry'].value_counts()
+Entry_count_lc = data_lc['Entry'].value_counts()
 
-sc = SignalP_controller()
-site = "https://services.healthtech.dtu.dk/service.php?SignalP-4.1"
-sc.site_enter(site)
-seq = 'MWVRQVPWSF TWAVLQLSWQ SGWLLEVPNG PWRSLTFYPA WLTVSEGANA TFTCSLSNWS EDLMLNWNRL SPSNQTEKQA AFCNGLSQPV QDARFQIIQL PNRHDFHMNI LDTRRNDSGI YLCGAISLHP KAKIEESPGA ELVVTERILE TSTRYPSPSP KPEGRFQGMV IGIMSALVGI PVLLLLAWAL AVFCSTSMSE ARGAGSKDDT LKEEPSAAPV PSVAYEELDF QGREKTPELP TACVHTEYAT IVFTEGLGAS AMGRRGSADG LQGPRPPRHE DGHCSWPL'
-y = sc.input_seq(sequence=seq)
+# Entry name 변경
+Entry_count_all.name = 'Entry_count_all'
+Entry_count_hc.name = 'Entry_count_hc'
+Entry_count_lc.name = 'Entry_count_lc'
 
-p = y.find("1")
-q = y.find("#", p)
-x = y[p:q]
-x_list = x.split()
+all_set_4 = Entry_count_all[Entry_count_all == 4]
+hc_set_2 = Entry_count_hc[Entry_count_hc == 2]
+lc_set_2 = Entry_count_lc[Entry_count_lc == 2]
+
+all_list = list(all_set_4.index)
+hc_list = list(hc_set_2.index)
+lc_list = list(lc_set_2.index)
+
+all_data = data[data["Entry"].isin(all_list)]
+hc_data = data_hc[data_hc["Entry"].isin(hc_list)]
+lc_data = data_lc[data_lc["Entry"].isin(lc_list)]
+
+writer = pd.ExcelWriter('filtered_data.xlsx', engine='xlsxwriter')
+
+all_data.to_excel(writer, sheet_name='all', index=None)
+hc_data.to_excel(writer, sheet_name='hc', index=None)
+lc_data.to_excel(writer, sheet_name='lc', index=None)
+
+writer.save()

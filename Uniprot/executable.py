@@ -55,7 +55,7 @@ for i in seq_data:
         "Result: \n", html[0:500], "..."
     )
 
-    if len(result_data) == 800:
+    if len(result_data) == 10:
         save_excel = export_logic(result_data, standard_variable, seq_header, file_route,
                                   file_number=str(seq_data.index(i)+1))
         result_data = []
