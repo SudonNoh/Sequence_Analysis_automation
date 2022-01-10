@@ -97,35 +97,16 @@ import pandas as pd
 #     globals()['{}_new'.format(i[:-5])] = pd.read_excel(i, sheet_name='New data')
 
 route = 'C:/Users/SD NOH/PycharmProjects/OpenInnovation/'
-x1_raw = pd.read_excel(route + 'SignalP__800.xlsx', sheet_name='Raw data')
-x1_new = pd.read_excel(route + 'SignalP__800.xlsx', sheet_name='New data')
+number_list = ['800', '1600', '2400', '3200', '4000', '4800', '5600', '6400', '624']
+new_list = []
+raw_list = []
 
-x2_raw = pd.read_excel(route + 'SignalP__1600.xlsx', sheet_name='Raw data')
-x2_new = pd.read_excel(route + 'SignalP__1600.xlsx', sheet_name='New data')
-
-x3_raw = pd.read_excel(route + 'SignalP__2400.xlsx', sheet_name='Raw data')
-x3_new = pd.read_excel(route + 'SignalP__2400.xlsx', sheet_name='New data')
-
-x4_raw = pd.read_excel(route + 'SignalP__3200.xlsx', sheet_name='Raw data')
-x4_new = pd.read_excel(route + 'SignalP__3200.xlsx', sheet_name='New data')
-
-x5_raw = pd.read_excel(route + 'SignalP__4000.xlsx', sheet_name='Raw data')
-x5_new = pd.read_excel(route + 'SignalP__4000.xlsx', sheet_name='New data')
-
-x6_raw = pd.read_excel(route + 'SignalP__4800.xlsx', sheet_name='Raw data')
-x6_new = pd.read_excel(route + 'SignalP__4800.xlsx', sheet_name='New data')
-
-x7_raw = pd.read_excel(route + 'SignalP__5600.xlsx', sheet_name='Raw data')
-x7_new = pd.read_excel(route + 'SignalP__5600.xlsx', sheet_name='New data')
-
-x8_raw = pd.read_excel(route + 'SignalP__6400.xlsx', sheet_name='Raw data')
-x8_new = pd.read_excel(route + 'SignalP__6400.xlsx', sheet_name='New data')
-
-x9_raw = pd.read_excel(route + 'SignalP__624.xlsx', sheet_name='Raw data')
-x9_new = pd.read_excel(route + 'SignalP__624.xlsx', sheet_name='New data')
-
-new_list = [x1_new, x2_new, x3_new, x4_new, x5_new, x6_new, x7_new, x8_new, x9_new]
-raw_list = [x1_raw, x2_raw, x3_raw, x4_raw, x5_raw, x6_raw, x7_raw, x8_raw, x9_raw]
+for i, j in zip(number_list, range(len(number_list))):
+     filename = 'SignalP_{}.xlsx'.format(i)
+     globals()['x{}_raw'.format(str(j+1))] = pd.read_excel(route + filename, sheet_name='Raw data')
+     globals()['x{}_new'.format(str(j+1))] = pd.read_excel(route + filename, sheet_name='New data')
+     new_list.append(globals()['x{}_new'.format(str(j+1))])
+     raw_list.append(globals()['x{}_raw'.format(str(j+1))])
 
 new_data = pd.concat(new_list, axis=0, ignore_index=True).drop(columns='Unnamed: 0')
 raw_data = pd.concat(raw_list, axis=0, ignore_index=True).drop(columns='Unnamed: 0')
